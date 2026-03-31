@@ -12,15 +12,25 @@ class AMapClient:
         self.api_key = settings.AMAP_WEB_KEY
 
     def walking_route(self, orig_lng, orig_lat, dest_lng, dest_lat):
-        response = requests.get(
-            f"{self.base_url}/direction/walking",
-            params={
-                "key": self.api_key,
-                "origin": f"{orig_lng},{orig_lat}",
-                "destination": f"{dest_lng},{dest_lat}",
-            },
-            timeout=10,
-        ).json()
+        try:
+            http_response = requests.get(
+                f"{self.base_url}/direction/walking",
+                params={
+                    "key": self.api_key,
+                    "origin": f"{orig_lng},{orig_lat}",
+                    "destination": f"{dest_lng},{dest_lat}",
+                },
+                timeout=10,
+            )
+            http_response.raise_for_status()
+        except requests.RequestException as exc:
+            raise AMapAPIError("高德路径规划服务暂时不可用") from exc
+
+        try:
+            response = http_response.json()
+        except ValueError as exc:
+            raise AMapAPIError("高德路径规划服务返回了无效响应") from exc
+
         if response.get("status") != "1":
             raise AMapAPIError(response.get("info", "路径规划失败"))
 

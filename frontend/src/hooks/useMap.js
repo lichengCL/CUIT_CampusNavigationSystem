@@ -69,7 +69,7 @@ export function useMap({
   }, [mapConfig]);
 
   useEffect(() => {
-    if (!mapRef.current || !AMapRef.current || !mapConfig) {
+    if (!isMapReady || !mapRef.current || !AMapRef.current || !mapConfig) {
       return;
     }
 
@@ -86,10 +86,10 @@ export function useMap({
       fillOpacity: 0.12
     });
     mapRef.current.add(polygonRef.current);
-  }, [mapConfig]);
+  }, [isMapReady, mapConfig]);
 
   useEffect(() => {
-    if (!mapRef.current || !AMapRef.current) {
+    if (!isMapReady || !mapRef.current || !AMapRef.current) {
       return;
     }
 
@@ -125,10 +125,10 @@ export function useMap({
       map.add(marker);
       markers.set(poi.id, marker);
     }
-  }, [onMarkerClick, pois]);
+  }, [isMapReady, onMarkerClick, pois]);
 
   useEffect(() => {
-    if (!mapRef.current || !AMapRef.current) {
+    if (!isMapReady || !mapRef.current || !AMapRef.current) {
       return;
     }
 
@@ -152,10 +152,10 @@ export function useMap({
 
     mapRef.current.add(routeRef.current);
     mapRef.current.setFitView([routeRef.current, polygonRef.current].filter(Boolean));
-  }, [routeResult]);
+  }, [isMapReady, routeResult]);
 
   useEffect(() => {
-    if (!mapRef.current || !infoWindowRef.current || !activePoi) {
+    if (!isMapReady || !mapRef.current || !infoWindowRef.current || !activePoi) {
       return;
     }
 
@@ -167,7 +167,7 @@ export function useMap({
     if (marker) {
       mapRef.current.setFitView([marker, polygonRef.current].filter(Boolean));
     }
-  }, [activePoi]);
+  }, [activePoi, isMapReady]);
 
   return {
     containerRef,

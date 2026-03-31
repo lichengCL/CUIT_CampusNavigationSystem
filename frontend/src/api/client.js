@@ -1,8 +1,16 @@
 import axios from "axios";
 
 
+function resolveApiBaseUrl() {
+  const runtimeApiBaseUrl = globalThis.window?.electronAPI?.runtimeConfig?.apiBaseUrl;
+  const configuredApiBaseUrl =
+    runtimeApiBaseUrl || process.env.REACT_APP_API_BASE || "http://localhost:8000/api";
+
+  return configuredApiBaseUrl.replace(/\/+$/, "");
+}
+
 const client = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE || "http://localhost:8000/api",
+  baseURL: resolveApiBaseUrl(),
   timeout: 10000
 });
 
