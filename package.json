@@ -1,0 +1,9 @@
+{
+  "name": "cuit-campus-navigation-system",
+  "private": true,
+  "scripts": {
+    "start": "frontend\\node_modules\\.bin\\concurrently.cmd --kill-others-on-fail --names backend,frontend --prefix-colors blue,green \".\\.venv\\Scripts\\python.exe backend\\manage.py runserver 127.0.0.1:8000 --noreload\" \"npm --prefix frontend run start\"",
+    "start:backend": ".\\.venv\\Scripts\\python.exe backend\\manage.py runserver 127.0.0.1:8000 --noreload",
+    "start:frontend": "npm --prefix frontend run start"
+  }
+}

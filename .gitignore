@@ -6,6 +6,7 @@ __pycache__/
 frontend/node_modules/
 frontend/dist/
 frontend/release/
+backend/.env
 
 backend/**/__pycache__/
 backend/**/*.pyc

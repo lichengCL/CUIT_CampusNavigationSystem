@@ -60,18 +60,33 @@
 CREATE DATABASE campus_nav;
 ```
 
-### 2. 启动后端
+进入后端目录，复制环境变量模板并填写本机数据库密码：
 
 ```bash
 cd backend
+cp .env.example .env
+```
+
+至少需要确认以下变量与本机 PostgreSQL 一致：
+
+- `POSTGRES_DB=campus_nav`
+- `POSTGRES_USER=postgres`
+- `POSTGRES_PASSWORD=你的本机数据库密码`
+- `POSTGRES_HOST=127.0.0.1`
+- `POSTGRES_PORT=5432`
+
+### 2. 启动后端
+
+```bash
 pip install -r requirements.txt
 python manage.py migrate
+python scripts/migrate_poi_data.py
 python manage.py runserver
 ```
 
 后端运行在 http://localhost:8000 ，API 前缀为 `/api/`。
 
-数据库连接可通过环境变量配置：`POSTGRES_DB`、`POSTGRES_USER`、`POSTGRES_PASSWORD`、`POSTGRES_HOST`、`POSTGRES_PORT`。
+后端会优先读取 `backend/.env` 中的数据库配置；如果 `POSTGRES_PASSWORD` 为空，会在启动时直接提示配置缺失。
 
 ### 3. 启动前端
 
@@ -83,7 +98,28 @@ npm run start
 
 前端开发服务器运行在 http://localhost:3000 。
 
-### 4. Electron 桌面应用（可选）
+### 4. 根目录一键联调启动
+
+首次使用前，先确保前端依赖已安装：
+
+```bash
+cd frontend
+npm install
+```
+
+之后回到仓库根目录，直接执行：
+
+```bash
+cd ..
+npm start
+```
+
+该命令会同时启动：
+
+- Django 后端：`http://127.0.0.1:8000`
+- React 前端：`http://127.0.0.1:3000`
+
+### 5. Electron 桌面应用（可选）
 
 ```bash
 cd frontend
@@ -97,7 +133,7 @@ npm run electron-build    # 打包发布
 |---|---|---|
 | GET | `/api/pois/` | 获取所有 POI |
 | GET | `/api/pois/search/?q=关键词` | 模糊搜索 POI |
-| GET | `/api/routing/walk/?origin=lng,lat&destination=lng,lat` | 两点步行路径规划 |
+| GET | `/api/routing/walk/?orig_lng=经度&orig_lat=纬度&dest_lng=经度&dest_lat=纬度` | 两点步行路径规划 |
 | POST | `/api/routing/multi/` | 多点路径规划 |
 | GET | `/api/config/map/` | 获取地图配置（中心点、缩放、边界、高德 Key） |
 
